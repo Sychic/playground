@@ -1,22 +1,14 @@
 plugins {
-    kotlin("jvm") version "1.5.10"
-    id("net.minecraftforge.gradle.forge") version "6f5327"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    kotlin("jvm") version "1.9.20"
+    id("gg.essential.loom") version "1.3.12"
+    id("gg.essential.defaults") version "0.3.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     java
     idea
 }
 
 group = "sychic.playground"
 version = "1.0-SNAPSHOT"
-
-
-minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
-    mappings = "stable_22"
-    makeObfSourceJar = false
-    isGitVersion = false
-}
 
 repositories {
     mavenCentral()
@@ -29,8 +21,8 @@ val shadowMe: Configuration by configurations.creating {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    shadowMe("gg.essential:loader-launchwrapper:1.1.3")
-    implementation("gg.essential:essential-1.8.9-forge:1854")
+    shadowMe("gg.essential:loader-launchwrapper:1.2.1")
+    implementation("gg.essential:essential-1.8.9-forge:14616+g169bd9af6a")
 }
 
 sourceSets {
@@ -42,11 +34,6 @@ sourceSets {
 tasks {
     processResources {
         inputs.property("version", project.version)
-        inputs.property("mcversion", project.minecraft.version)
-
-        filesMatching("mcmod.info") {
-            expand(mapOf("version" to project.version, "mcversion" to project.minecraft.version))
-        }
     }
 
 }

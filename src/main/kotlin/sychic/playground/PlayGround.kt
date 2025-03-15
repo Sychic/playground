@@ -1,31 +1,46 @@
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiScreen
-import net.minecraftforge.client.ClientCommandHandler
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
-import sychic.playground.commands.ChromaCommand
+package sychic.playground
 
-@Mod(name = "PlayGround", modid = "playground", version = "1.0.0", modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter")
-object PlayGround {
+import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.server.command.CommandManager
+import sychic.playground.gui.BlurScreen
+import sychic.playground.gui.ChromaScreen
+import sychic.playground.gui.ShaderTextScreen
+
+//@Mod(name = "PlayGround", modid = "playground", version = "1.0.0", modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter")
+object PlayGround : ClientModInitializer {
 
     // variable to delay opening guis a tick
-    var displayScreen: GuiScreen? = null
+    var displayScreen: Screen? = null
 
-    @Mod.EventHandler
-    fun onFMLInitialization(event: FMLInitializationEvent) {
-        MinecraftForge.EVENT_BUS.register(this)
-        ClientCommandHandler.instance.registerCommand(ChromaCommand)
+    override fun onInitializeClient() {
+        println("aaea")
+//        MinecraftForge.EVENT_BUS.register(this)
+
+        ClientTickEvents.END_CLIENT_TICK.register(::onTick)
+        CommandRegistrationCallback.EVENT.register { dispatcher, registryAccess, environment ->
+            dispatcher.register(CommandManager.literal("chroma").executes {
+                displayScreen = ChromaScreen()
+                1
+            })
+            dispatcher.register(CommandManager.literal("text").executes {
+                displayScreen = ShaderTextScreen()
+                1
+            })
+            dispatcher.register(CommandManager.literal("blur").executes {
+                displayScreen = BlurScreen()
+                1
+            })
+        }
     }
 
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.START) return
+    fun onTick(client: MinecraftClient) {
 
         if (displayScreen != null) {
-            Minecraft.getMinecraft().displayGuiScreen(displayScreen)
+            client.setScreen(displayScreen)
             displayScreen = null
         }
     }

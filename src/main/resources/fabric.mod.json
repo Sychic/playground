@@ -1,0 +1,17 @@
+{
+  "schemaVersion" : 1,
+  "id" : "playground",
+  "version" : "0.0.1",
+  "name" : "Playground",
+  "entrypoints" : {
+    "client" : [
+      "sychic.playground.PlayGround"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.7",
+    "minecraft": "~1.21.3",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
